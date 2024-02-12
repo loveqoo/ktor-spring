@@ -1,13 +1,12 @@
-val ktorVersion: String by project
-val kotlinVersion: String by project
-val logbackVersion: String by project
-val prometheusVersion: String by project
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("io.ktor.plugin") version "2.3.7"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
-    id("org.jetbrains.kotlin.plugin.spring") version "1.9.22"
+    val plugins = libs.plugins
+    application
+    alias(plugins.kotlin.jvm)
+    alias(plugins.ktor.plugin)
+    alias(plugins.kotlin.spring)
+    alias(plugins.kotlin.serialization)
 }
 
 group = "com.example"
@@ -25,17 +24,24 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm")
-    implementation("io.ktor:ktor-server-resources")
-    implementation("io.ktor:ktor-server-default-headers-jvm")
-    implementation("io.ktor:ktor-server-swagger-jvm")
-    implementation("io.ktor:ktor-server-metrics-micrometer-jvm")
-    implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
-    implementation("io.ktor:ktor-server-netty-jvm")
-    implementation("org.springframework:spring-context:6.1.3")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    implementation(libs.bundles.ktor.deps)
+    implementation(libs.spring.context)
+    implementation(libs.micrometer.registry.prometheus)
+    implementation(libs.logback.classic)
+    testImplementation(libs.bundles.ktor.test)
+    testImplementation(libs.kotlin.test.junit)
+}
+
+tasks {
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "21"
+        }
+    }
 }

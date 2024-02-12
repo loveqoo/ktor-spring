@@ -1,0 +1,42 @@
+[versions]
+kotlin = "1.9.22"
+ktor = "2.3.7"
+logback = "1.4.14"
+prometheus = "1.6.3"
+spring = "6.1.3"
+
+[libraries]
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "prometheus" }
+ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
+ktor-server-content-negotiation-jvm = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktor" }
+ktor-server-default-headers-jvm = { module = "io.ktor:ktor-server-default-headers-jvm", version.ref = "ktor" }
+ktor-server-metrics-micrometer-jvm = { module = "io.ktor:ktor-server-metrics-micrometer-jvm", version.ref = "ktor" }
+ktor-server-netty-jvm = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktor" }
+ktor-server-swagger-jvm = { module = "io.ktor:ktor-server-swagger-jvm", version.ref = "ktor" }
+ktor-serialization-kotlinx-json-jvm = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm", version.ref = "ktor" }
+ktor-server-tests-jvm = { module = "io.ktor:ktor-server-tests-jvm", version.ref = "ktor" }
+spring-context = { module = "org.springframework:spring-context", version.ref = "spring" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+
+[bundles]
+ktor-deps = [
+    "ktor-server-core-jvm",
+    "ktor-server-content-negotiation-jvm",
+    "ktor-server-default-headers-jvm",
+    "ktor-server-metrics-micrometer-jvm",
+    "ktor-server-netty-jvm",
+    "ktor-server-resources",
+    "ktor-server-swagger-jvm",
+    "ktor-serialization-kotlinx-json-jvm",
+]
+ktor-test = [
+    "ktor-server-tests-jvm"
+]
+
+[plugins]
+ktor-plugin = { id = "io.ktor.plugin", version.ref = "ktor" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
