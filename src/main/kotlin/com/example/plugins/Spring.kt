@@ -39,3 +39,20 @@ class SpringDependencyInjection {
 val ApplicationCall.springApplicationContext get() = attributes[pluginKey]
 
 inline fun <reified T> ApplicationCall.bean(): T = springApplicationContext.getBean(T::class.java)
+
+
+fun Application.configureSpring(vararg packages: String) {
+    check(packages.isNotEmpty()) {
+        "base packages must set"
+    }
+    install(SpringDependencyInjection) {
+        basePackages = arrayOf(*packages)
+        initialize()
+    }
+}
+
+fun Application.configureSpring(configuration: SpringDependencyInjection.SpringConfiguration.() -> Unit) {
+    install(SpringDependencyInjection) {
+        configuration()
+    }
+}

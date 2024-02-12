@@ -11,11 +11,16 @@ class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
+            configureSpring("com.example")
             configureRouting()
         }
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
+        }
+        client.get("/hello").apply {
+            assertEquals(HttpStatusCode.OK, status)
+            assertEquals("Hello World Anthony, Scully", bodyAsText())
         }
     }
 }

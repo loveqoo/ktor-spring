@@ -11,10 +11,7 @@ fun main() {
 }
 
 fun Application.module() {
-    install(SpringDependencyInjection) {
-        basePackages = arrayOf("com.example")
-        initialize()
-    }
+    configureSpring("com.example")
     configureHTTP()
     configureMonitoring()
     configureSerialization()
