@@ -40,7 +40,7 @@ val ApplicationCall.springApplicationContext get() = attributes[pluginKey]
 
 inline fun <reified T> ApplicationCall.bean(): T = springApplicationContext.getBean(T::class.java)
 
-
+@Throws(IllegalStateException::class)
 fun Application.configureSpring(vararg packages: String) {
     check(packages.isNotEmpty()) {
         "base packages must set"
