@@ -4,6 +4,7 @@ plugins {
     val plugins = libs.plugins
     application
     alias(plugins.kotlin.jvm)
+    alias(plugins.kotlin.ksp)
     alias(plugins.ktor.plugin)
     alias(plugins.kotlin.spring)
     alias(plugins.kotlin.serialization)
@@ -28,6 +29,9 @@ dependencies {
     implementation(libs.spring.context)
     implementation(libs.micrometer.registry.prometheus)
     implementation(libs.logback.classic)
+    implementation(libs.akkurate.core)
+    implementation(libs.akkurate.ksp.plugin)
+    ksp(libs.akkurate.ksp.plugin)
     testImplementation(libs.bundles.ktor.test)
     testImplementation(libs.kotlin.test.junit)
 }
