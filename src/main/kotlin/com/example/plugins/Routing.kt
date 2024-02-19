@@ -23,19 +23,6 @@ import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import kotlinx.serialization.Serializable
 
-private object RoutePath {
-    const val ROOT = "/"
-    const val HELLO = "/hello"
-
-    object Metrics {
-        const val MICROMETER = "metrics-micrometer"
-    }
-
-    object Json {
-        const val KOTLINX_SERIALIZATION = "kotlinx-serialization"
-    }
-}
-
 
 fun Application.configureRouting() {
     install(DefaultHeaders) {
@@ -52,21 +39,27 @@ fun Application.configureRouting() {
         json()
     }
     configurableLogging {
-        onPath(RoutePath.HELLO)
+        onPath("/hello")
     }
     routing {
-        get(RoutePath.ROOT) {
+        get {
             call.respondText("Hello World!")
         }
-        get(RoutePath.Metrics.MICROMETER) {
-            call.respond(appMicrometerRegistry.scrape())
+        route("metrics-micrometer") {
+            get {
+                call.respond(appMicrometerRegistry.scrape())
+            }
         }
-        get(RoutePath.Json.KOTLINX_SERIALIZATION) {
-            call.respond(mapOf("hello" to "world"))
+        route("kotlinx-serialization") {
+            get {
+                call.respond(mapOf("hello" to "world"))
+            }
         }
-        get(RoutePath.HELLO) {
-            val service: SimpleService = call.bean()
-            call.respondText(service.execute())
+        route("hello") {
+            get {
+                val service: SimpleService = call.bean()
+                call.respondText(service.execute())
+            }
         }
         swaggerUI(path = "openapi")
         get<Articles> { article ->
