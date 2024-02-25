@@ -31,8 +31,12 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(libs.akkurate.core)
     implementation(libs.akkurate.ksp.plugin)
+    implementation(libs.bundles.exposed)
+    implementation(libs.mysql.connector)
+    implementation(libs.hikari.cp)
     ksp(libs.akkurate.ksp.plugin)
     testImplementation(libs.bundles.ktor.test)
+    testImplementation(libs.h2.database)
     testImplementation(libs.kotlin.test.junit)
 }
 
