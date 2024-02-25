@@ -25,11 +25,16 @@ class DatabaseTest {
                 it[name] = "Anthony"
             }
 
+            val author01 = Authors.insert {
+                it[name] = "Anthony"
+            }
+
             val inserted = Posts.insert {
                 it[title] = "New Life"
                 it[content] = "Your new life need to renewal."
                 it[status] = PostStatus.DRAFT
-                it[author] = insertedAuthor.value
+                // it[author] = author01[Authors.id]
+                it[author] = insertedAuthor
             }
             assertEquals(inserted.insertedCount, 1)
             assertEquals(Posts.select(Posts.id).count(), 1L)
