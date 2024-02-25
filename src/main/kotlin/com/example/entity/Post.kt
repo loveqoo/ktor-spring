@@ -10,8 +10,13 @@ import java.time.LocalDateTime
 object Posts : LongIdTable("post") {
     val title = varchar("title", 255)
     val content = text("content")
-    val author = varchar("author", 100)
+    val author = reference("author", Authors)
+    val status = enumerationByName("status", 10, PostStatus::class)
     val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
+}
+
+enum class PostStatus {
+    DRAFT, RELEASE, DROP
 }
 
 class Post(id: EntityID<Long>) : LongEntity(id) {
@@ -19,7 +24,8 @@ class Post(id: EntityID<Long>) : LongEntity(id) {
 
     var title by Posts.title
     var content by Posts.content
-    var author by Posts.author
+    var author by Author referencedOn Posts.author
+    var status by Posts.status
     var createdAt by Posts.createdAt
 
     fun description() = "$title by $author"
