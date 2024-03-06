@@ -1,0 +1,29 @@
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": 999,
+  "email": "content@hello.com",
+  "password": "11111111112222222222333333333344"
+}
+
+###
+GET http://localhost:8080/users
+Content-Type: application/json
+
+###
+GET http://localhost:8080/users/1
+Content-Type: application/json
+
+###
+GET http://localhost:8080/
+Content-Type: application/json
+
+
+###
+POST http://localhost:8080/articles
+Content-Type: application/json
+
+{
+  "sort": "old"
+}

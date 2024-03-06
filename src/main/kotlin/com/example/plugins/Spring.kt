@@ -1,5 +1,6 @@
 package com.example.plugins
 
+import arrow.core.Either
 import io.ktor.server.application.*
 import io.ktor.util.*
 import org.springframework.context.ApplicationContext
@@ -38,7 +39,7 @@ class SpringDependencyInjection {
 
 val ApplicationCall.springApplicationContext get() = attributes[pluginKey]
 
-inline fun <reified T> ApplicationCall.bean(): T = springApplicationContext.getBean(T::class.java)
+inline fun <reified T> ApplicationCall.bean(): Either<Throwable, T> = Either.catch { springApplicationContext.getBean(T::class.java) }
 
 @Throws(IllegalStateException::class)
 fun Application.configureSpring(vararg packages: String) {
