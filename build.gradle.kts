@@ -15,7 +15,6 @@ version = "0.0.1"
 
 application {
     mainClass.set("com.example.ApplicationKt")
-
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
@@ -42,10 +41,6 @@ dependencies {
     implementation(libs.komapper.starter.r2dbc)
     implementation(libs.komapper.dialect.h2.r2dbc)
     ksp(libs.komapper.processor)
-    // implementation(libs.kotysa.r2dbc)
-    // implementation(libs.bundles.exposed)
-    // implementation(libs.mysql.connector)
-    // implementation(libs.hikari.cp)
     ksp(libs.akkurate.ksp.plugin)
     testImplementation(libs.bundles.ktor.test)
     testImplementation(libs.h2.database)
