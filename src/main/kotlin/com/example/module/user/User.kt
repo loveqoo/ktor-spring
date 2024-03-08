@@ -3,6 +3,7 @@ package com.example.module.user
 import arrow.core.getOrElse
 import arrow.core.raise.either
 import com.example.config.ServerConfig.Spring.bean
+import com.example.config.ServerConfig.Spring.respondError
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -18,7 +19,7 @@ fun Application.module() {
                     val service = call.bean<UserService>().bind()
                     service.save(userForm).bind()
                 }.fold({
-                    call.respond(HttpStatusCode.BadRequest, it.message ?: "unknown error")
+                    call.respondError(HttpStatusCode.BadRequest, it)
                 }, {
                     call.respondText("Ok")
                 })
@@ -28,7 +29,7 @@ fun Application.module() {
                     val service = call.bean<UserService>().bind()
                     service.findAll().bind()
                 }.fold({
-                    call.respond(HttpStatusCode.BadRequest, it.message ?: "unknown error")
+                    call.respondError(HttpStatusCode.BadRequest, it)
                 }, {
                     call.respond(it)
                 })
@@ -39,7 +40,7 @@ fun Application.module() {
                     val service = call.bean<UserService>().bind()
                     service.findById(id).bind()
                 }.fold({
-                    call.respond(HttpStatusCode.NotFound, it.message ?: "unknown error")
+                    call.respondError(HttpStatusCode.BadRequest, it)
                 }, {
                     call.respond(it.getOrElse { "Nothing!!" })
                 })

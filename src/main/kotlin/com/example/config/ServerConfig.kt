@@ -1,8 +1,9 @@
 package com.example.config
 
 import arrow.core.Either
-import arrow.core.raise.either
-import com.example.config.ServerConfig.Spring.bean
+import arrow.core.getOrElse
+import com.example.config.ServerConfig.Spring.messageSource
+import com.example.infrastructure.Extensions.MessageSourceExtension.errorMessage
 import com.example.infrastructure.Extensions.MessageSourceExtension.message
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -24,6 +25,7 @@ import io.ktor.util.pipeline.*
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import org.slf4j.event.Level
+import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.context.ApplicationContext
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
@@ -68,13 +70,7 @@ object ServerConfig {
                     }
                 }
                 get {
-                    either {
-                        call.bean<MessageSource>().bind()
-                    }.fold({
-                        call.respond(HttpStatusCode.InternalServerError, it.message ?: "unknown error")
-                    }, {
-                        call.respondText(it.message("greeting", arrayOf("스트레인저")))
-                    })
+                    call.respondText(call.messageSource.message("greeting", arrayOf("스트레인저")).getOrElse { "" })
                 }
             }
         }
@@ -168,9 +164,16 @@ object ServerConfig {
         }
 
         val ApplicationCall.springApplicationContext get() = attributes[pluginKey]
+        val ApplicationCall.messageSource
+            get() = bean<MessageSource>().getOrNull() ?: throw NoSuchBeanDefinitionException(MessageSource::class.java)
 
-        inline fun <reified T> ApplicationCall.bean(): Either<Throwable, T> =
-            Either.catch { springApplicationContext.getBean(T::class.java) }
+        inline fun <reified T> ApplicationCall.bean(): Either<Throwable, T> = Either.catch {
+            springApplicationContext.getBean(T::class.java)
+        }
+
+        suspend fun ApplicationCall.respondError(statusCode: HttpStatusCode, e: Throwable) {
+            this.respond(statusCode, this.messageSource.errorMessage(e))
+        }
 
         @Throws(IllegalStateException::class)
         fun Application.config(vararg packages: String) {
