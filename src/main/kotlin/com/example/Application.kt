@@ -1,17 +1,16 @@
 package com.example
 
-import com.example.plugins.configureRouting
-import com.example.plugins.configureSpring
+import com.example.config.ServerConfig
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-}
+fun main(args: Array<String>): Unit = EngineMain.main(args)
 
 fun Application.module() {
-    configureSpring("com.example")
-    configureRouting()
+    ServerConfig.Spring.run {
+        val projectPackage = environment.config.propertyOrNull("project.package")?.getString() ?: "com.example"
+        config(projectPackage)
+    }
+    ServerConfig.Logging.run { config() }
+    ServerConfig.Web.run { config() }
 }

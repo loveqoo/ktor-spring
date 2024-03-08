@@ -1,6 +1,6 @@
 package com.example.config
 
-import com.example.domain.user
+import com.example.module.user.userEntity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.komapper.core.dsl.Meta
@@ -20,21 +20,12 @@ class SpringConfig {
     }
 
     @Bean
-    fun userList(): List<String> = listOf("Anthony", "Scully")
-
-//    @Bean(destroyMethod = "stop")
-//    fun h2Server(): Server {
-//        return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-ifNotExists").start()
-//    }
-
-    @Bean
-    //@DependsOn("h2Server")
     fun database(): R2dbcDatabase = R2dbcDatabase("r2dbc:h2:mem:///example;DB_CLOSE_DELAY=-1").also { db ->
         runBlocking {
             delay(1000L)
             db.withTransaction {
                 db.runQuery {
-                    QueryDsl.create(Meta.user)
+                    QueryDsl.create(Meta.userEntity)
                 }
             }
         }

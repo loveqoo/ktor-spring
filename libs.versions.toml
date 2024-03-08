@@ -2,17 +2,14 @@
 akkurate = "0.7.0"
 arrow = "1.2.3"
 asyncer = "1.1.2" # r2dbc-mysql
-# exposed = "0.47.0"
 hikari = "5.1.0"
 h2 = "2.2.224"
 komapper = "1.16.1"
 kotlin = "1.9.22"
 kotlinx = "0.5.0"
-# kotysa = "3.2.2"
 ksp = "1.9.22-1.0.17"
-ktor = "2.3.7"
+ktor = "2.3.9"
 logback = "1.4.14"
-#mysql = "8.3.0"
 prometheus = "1.6.3"
 r2dbc = "1.0.0.RELEASE"
 spring = "6.1.3"
@@ -22,22 +19,17 @@ akkurate-core = { module = "dev.nesk.akkurate:akkurate-core", version.ref = "akk
 akkurate-ksp-plugin = { module = "dev.nesk.akkurate:akkurate-ksp-plugin", version.ref = "akkurate" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 asyncer-mysql = { module = "io.asyncer:r2dbc-mysql", version.ref = "asyncer" }
-#exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
-#exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
-#exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
-#exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 h2-database = { module = "com.h2database:h2", version.ref = "h2" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "prometheus" }
-#mysql-connector = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
 komapper-platform = { module = "org.komapper:komapper-platform", version.ref = "komapper" }
 komapper-starter-r2dbc = { module = "org.komapper:komapper-starter-r2dbc", version.ref = "komapper" }
 komapper-dialect-h2-r2dbc = { module = "org.komapper:komapper-dialect-h2-r2dbc", version.ref = "komapper" }
 komapper-processor = { module = "org.komapper:komapper-processor", version.ref = "komapper" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime-jvm", version.ref = "kotlinx" }
-#kotysa-r2dbc = { module = "org.ufoss.kotysa:kotysa-r2dbc", version.ref = "kotysa" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
 ktor-server-request-validation = { module = "io.ktor:ktor-server-request-validation", version.ref = "ktor" }
 ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
 ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
@@ -54,13 +46,8 @@ r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc" }
 spring-context = { module = "org.springframework:spring-context", version.ref = "spring" }
 
 [bundles]
-#exposed = [
-#    "exposed-core",
-#    "exposed-dao",
-#    "exposed-jdbc",
-#    "exposed-java-time"
-#]
 ktor-deps = [
+    "ktor-server-auth",
     "ktor-server-call-logging",
     "ktor-server-core-jvm",
     "ktor-server-content-negotiation-jvm",
