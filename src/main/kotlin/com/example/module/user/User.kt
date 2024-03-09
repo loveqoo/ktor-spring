@@ -4,6 +4,7 @@ import arrow.core.getOrElse
 import arrow.core.raise.either
 import com.example.config.ServerConfig.Spring.bean
 import com.example.config.ServerConfig.Spring.respondError
+import com.example.infrastructure.Extensions.ApplicationCallExtension.longParameter
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -36,7 +37,7 @@ fun Application.module() {
             }
             get("{id}") {
                 either {
-                    val id = call.parameters["id"]?.toLong() ?: error("Invalid Id")
+                    val id = call.longParameter("id").bind()
                     val service = call.bean<UserService>().bind()
                     service.findById(id).bind()
                 }.fold({
