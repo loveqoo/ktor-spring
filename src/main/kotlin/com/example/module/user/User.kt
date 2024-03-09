@@ -1,15 +1,21 @@
 package com.example.module.user
 
+import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.core.raise.either
-import com.example.config.ServerConfig.Spring.bean
+import com.example.config.ServerConfig.Spring.beanWithFlatten
 import com.example.config.ServerConfig.Spring.respondError
 import com.example.infrastructure.Extensions.ApplicationCallExtension.longParameter
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
 
 fun Application.module() {
     routing {
@@ -17,8 +23,9 @@ fun Application.module() {
             post {
                 either {
                     val userForm = call.receive<UserCreationForm>()
-                    val service = call.bean<UserService>().bind()
-                    service.save(userForm).bind()
+                    call.beanWithFlatten<UserService, UserEntity> { service ->
+                        service.save(userForm)
+                    }.bind()
                 }.fold({
                     call.respondError(HttpStatusCode.BadRequest, it)
                 }, {
@@ -27,8 +34,9 @@ fun Application.module() {
             }
             get {
                 either {
-                    val service = call.bean<UserService>().bind()
-                    service.findAll().bind()
+                    call.beanWithFlatten<UserService, List<UserEntity>> { service ->
+                        service.findAll()
+                    }.bind()
                 }.fold({
                     call.respondError(HttpStatusCode.BadRequest, it)
                 }, {
@@ -38,8 +46,9 @@ fun Application.module() {
             get("{id}") {
                 either {
                     val id = call.longParameter("id").bind()
-                    val service = call.bean<UserService>().bind()
-                    service.findById(id).bind()
+                    call.beanWithFlatten<UserService, Option<UserEntity>> { service ->
+                        service.findById(id)
+                    }.bind()
                 }.fold({
                     call.respondError(HttpStatusCode.BadRequest, it)
                 }, {
