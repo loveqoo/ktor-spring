@@ -2,7 +2,8 @@ package com.example.module.user
 
 import arrow.core.Either
 import arrow.core.Option
-import arrow.core.flatMap
+import io.github.resilience4j.circuitbreaker.CircuitBreaker
+import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.komapper.r2dbc.R2dbcDatabase
 import org.springframework.stereotype.Service
 
@@ -11,10 +12,12 @@ class UserService(
     private val db: R2dbcDatabase,
     private val repo: UserRepository
 ) {
+    private val cb: CircuitBreaker = CircuitBreaker.ofDefaults("")
+
     suspend fun save(
-        form: UserCreationForm
-    ): Either<Throwable, UserEntity> = form.get().flatMap { user ->
-        Either.catch {
+        user: UserEntity
+    ): Either<Throwable, UserEntity> = Either.catch {
+        cb.executeSuspendFunction {
             db.withTransaction {
                 repo.save(user)
             }

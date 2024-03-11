@@ -5,23 +5,37 @@ import arrow.core.getOrElse
 import com.example.config.ServerConfig.Spring.messageSource
 import com.example.infrastructure.Extensions.MessageSourceExtension.errorMessage
 import com.example.infrastructure.Extensions.MessageSourceExtension.message
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.resources.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.metrics.micrometer.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.defaultheaders.*
-import io.ktor.server.plugins.swagger.*
-import io.ktor.server.request.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.OutgoingContent
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.BaseApplicationPlugin
+import io.ktor.server.application.application
+import io.ktor.server.application.call
+import io.ktor.server.application.install
+import io.ktor.server.application.log
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.basic
+import io.ktor.server.metrics.micrometer.MicrometerMetrics
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.defaultheaders.DefaultHeaders
+import io.ktor.server.plugins.swagger.swaggerUI
+import io.ktor.server.request.path
 import io.ktor.server.resources.Resources
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.util.*
-import io.ktor.util.logging.*
-import io.ktor.util.pipeline.*
+import io.ktor.server.response.ApplicationSendPipeline
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import io.ktor.util.AttributeKey
+import io.ktor.util.logging.Logger
+import io.ktor.util.logging.error
+import io.ktor.util.pipeline.PipelinePhase
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import org.slf4j.event.Level
@@ -79,7 +93,9 @@ object ServerConfig {
     object Logging {
         private const val PHASE_NAME = "LoggingContentBody"
 
-        fun ApplicationCallPipeline.config(dsl: LogConfigBuilder.() -> Unit = {}) {
+        fun ApplicationCallPipeline.config(
+            dsl: LogConfigBuilder.() -> Unit = {}
+        ) {
             val (ignore, transform, logLevel, logger) = LogConfigBuilder().apply(dsl).get()
 
             val phase = PipelinePhase(PHASE_NAME)
@@ -96,7 +112,9 @@ object ServerConfig {
                         is OutgoingContent.NoContent -> Result.success("")
                         is OutgoingContent.ReadChannelContent -> Result.success("")
                         is OutgoingContent.WriteChannelContent -> Result.success("")
-                        else -> Result.failure(IllegalStateException("Not found any status in OutgoingContent at ${call.request.path()}"))
+                        else -> Result.failure(
+                            IllegalStateException("Not found any status in OutgoingContent at ${call.request.path()}")
+                        )
                     }.fold({
                         currentLogger.logStringByLevel(logLevel)(it)
                     }, {
@@ -106,14 +124,14 @@ object ServerConfig {
             }
         }
 
-        private fun Logger.logStringByLevel(logLevel: Level): (String) -> Unit {
-            return when (logLevel) {
-                Level.INFO -> this::info
-                Level.DEBUG -> this::debug
-                Level.WARN -> this::warn
-                Level.TRACE -> this::trace
-                Level.ERROR -> this::error
-            }
+        private fun Logger.logStringByLevel(
+            logLevel: Level
+        ): (String) -> Unit = when (logLevel) {
+            Level.INFO -> this::info
+            Level.DEBUG -> this::debug
+            Level.WARN -> this::warn
+            Level.TRACE -> this::trace
+            Level.ERROR -> this::error
         }
 
         data class LogConfig(
@@ -139,6 +157,8 @@ object ServerConfig {
 
             class SpringConfiguration : Supplier<AnnotationConfigApplicationContext> {
                 var basePackages = emptyArray<String>()
+
+                @Suppress("SpreadOperator")
                 private val ctx = lazy {
                     AnnotationConfigApplicationContext(*basePackages)
                 }
@@ -171,8 +191,12 @@ object ServerConfig {
             springApplicationContext.getBean(T::class.java)
         }
 
-        suspend fun ApplicationCall.respondError(statusCode: HttpStatusCode, e: Throwable) {
-            this.respond(statusCode, this.messageSource.errorMessage(e))
+        suspend fun ApplicationCall.respondError(
+            statusCode: HttpStatusCode,
+            e: Throwable,
+            defaultMessage: String = "Unknown Error"
+        ) {
+            this.respond(statusCode, this.messageSource.errorMessage(e, defaultMessage))
         }
 
         @Throws(IllegalStateException::class)

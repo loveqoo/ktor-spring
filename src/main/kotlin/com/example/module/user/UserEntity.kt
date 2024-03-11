@@ -5,7 +5,12 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
-import org.komapper.annotation.*
+import org.komapper.annotation.KomapperAutoIncrement
+import org.komapper.annotation.KomapperCreatedAt
+import org.komapper.annotation.KomapperEntity
+import org.komapper.annotation.KomapperId
+import org.komapper.annotation.KomapperTable
+import org.komapper.annotation.KomapperUpdatedAt
 
 @Serializable
 @KomapperEntity

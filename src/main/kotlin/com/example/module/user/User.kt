@@ -5,11 +5,16 @@ import arrow.core.raise.either
 import com.example.config.ServerConfig.Spring.bean
 import com.example.config.ServerConfig.Spring.respondError
 import com.example.infrastructure.Extensions.ApplicationCallExtension.longParameter
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
 
 fun Application.module() {
     routing {
@@ -18,9 +23,10 @@ fun Application.module() {
                 either {
                     val userForm = call.receive<UserCreationForm>()
                     val service = call.bean<UserService>().bind()
-                    service.save(userForm).bind()
-                }.fold({
-                    call.respondError(HttpStatusCode.BadRequest, it)
+                    val user = UserCreationForm.checkAndGet(userForm).bind()
+                    service.save(user).bind()
+                }.fold({ ex ->
+                    call.respondError(HttpStatusCode.BadRequest, ex)
                 }, {
                     call.respondText("Ok")
                 })
@@ -29,10 +35,10 @@ fun Application.module() {
                 either {
                     val service = call.bean<UserService>().bind()
                     service.findAll().bind()
-                }.fold({
-                    call.respondError(HttpStatusCode.BadRequest, it)
-                }, {
-                    call.respond(it)
+                }.fold({ ex ->
+                    call.respondError(HttpStatusCode.BadRequest, ex)
+                }, { list ->
+                    call.respond(list)
                 })
             }
             get("{id}") {
@@ -40,10 +46,10 @@ fun Application.module() {
                     val id = call.longParameter("id").bind()
                     val service = call.bean<UserService>().bind()
                     service.findById(id).bind()
-                }.fold({
-                    call.respondError(HttpStatusCode.BadRequest, it)
-                }, {
-                    call.respond(it.getOrElse { "Nothing!!" })
+                }.fold({ ex ->
+                    call.respondError(HttpStatusCode.BadRequest, ex)
+                }, { userOpt ->
+                    call.respond(userOpt.getOrElse { "Nothing!!" })
                 })
             }
         }

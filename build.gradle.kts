@@ -3,11 +3,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     val plugins = libs.plugins
     application
-    alias(plugins.kotlin.jvm)
+    id(plugins.detekt.pluginId)
+    id(plugins.ktlint.pluginId)
+    id(plugins.kotlin.jvm.pluginId)
     alias(plugins.kotlin.ksp)
     alias(plugins.ktor.plugin)
     alias(plugins.kotlin.spring)
     alias(plugins.kotlin.serialization)
+    alias(plugins.kover)
 }
 
 group = "com.example"
@@ -40,6 +43,7 @@ dependencies {
     }
     implementation(libs.komapper.starter.r2dbc)
     implementation(libs.komapper.dialect.h2.r2dbc)
+    implementation(libs.bundles.resilience4j)
     ksp(libs.komapper.processor)
     ksp(libs.akkurate.ksp.plugin)
     testImplementation(libs.bundles.ktor.test)
@@ -59,4 +63,14 @@ tasks {
             jvmTarget = "21"
         }
     }
+
+    withType<Test> {
+        useJUnitPlatform()
+        extensions.configure(kotlinx.kover.api.KoverTaskExtension::class) {
+            include("com.example.*")
+        }
+    }
 }
+
+setupKtlint()
+// setupDetekt()
