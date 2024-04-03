@@ -29,6 +29,8 @@ repositories {
 dependencies {
     implementation(libs.bundles.ktor.deps)
     implementation(libs.spring.context)
+    implementation(libs.spring.aspect)
+    implementation(libs.aspectj.weaver)
     implementation(libs.micrometer.registry.prometheus)
     implementation(libs.logback.classic)
     implementation(libs.arrow.core)

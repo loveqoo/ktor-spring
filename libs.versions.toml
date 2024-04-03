@@ -2,6 +2,7 @@
 akkurate = "0.7.0"
 arrow = "1.2.3"
 asyncer = "1.1.2" # r2dbc-mysql
+aspectj = "1.9.21"
 detekt = "1.23.5"
 hikari = "5.1.0"
 h2 = "2.2.224"
@@ -53,6 +54,8 @@ r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc" }
 resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j"}
 resilience4j-circuitbreaker = { module = "io.github.resilience4j:resilience4j-circuitbreaker", version.ref = "resilience4j"}
 spring-context = { module = "org.springframework:spring-context", version.ref = "spring" }
+spring-aspect = { module = "org.springframework:spring-aspects", version.ref = "spring" }
+aspectj-weaver = { module = "org.aspectj:aspectjweaver", version.ref = "aspectj" }
 
 [bundles]
 ktor-deps = [
