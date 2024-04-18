@@ -6,6 +6,7 @@ aspectj = "1.9.21"
 detekt = "1.23.5"
 hikari = "5.1.0"
 h2 = "2.2.224"
+junit = "5.10.2"
 komapper = "1.16.1"
 kover = "0.6.1"
 ktlint = "11.3.1"
@@ -14,6 +15,7 @@ kotlinx = "0.5.0"
 ksp = "1.9.22-1.0.17"
 ktor = "2.3.9"
 logback = "1.4.14"
+mockito = "5.11.0"
 prometheus = "1.6.3"
 r2dbc = "1.0.0.RELEASE"
 resilience4j = "2.2.0"
@@ -27,6 +29,7 @@ asyncer-mysql = { module = "io.asyncer:r2dbc-mysql", version.ref = "asyncer" }
 detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 h2-database = { module = "com.h2database:h2", version.ref = "h2" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "prometheus" }
 komapper-platform = { module = "org.komapper:komapper-platform", version.ref = "komapper" }
@@ -48,7 +51,8 @@ ktor-server-netty-jvm = { module = "io.ktor:ktor-server-netty-jvm", version.ref 
 ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktor" }
 ktor-server-swagger-jvm = { module = "io.ktor:ktor-server-swagger-jvm", version.ref = "ktor" }
 ktor-serialization-kotlinx-json-jvm = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm", version.ref = "ktor" }
-ktor-server-tests-jvm = { module = "io.ktor:ktor-server-tests-jvm", version.ref = "ktor" }
+ktor-server-tests-jvm = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito"}
 r2dbc-h2 = { module = "io.r2dbc:r2dbc-h2", version.ref = "r2dbc" }
 r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc" }
 resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j"}
@@ -76,7 +80,8 @@ resilience4j = [
     "resilience4j-circuitbreaker",
 ]
 ktor-test = [
-    "ktor-server-tests-jvm"
+    "ktor-server-tests-jvm",
+    "kotlin-test-junit"
 ]
 
 [plugins]
