@@ -13,7 +13,9 @@ class UserRepository(
 ) {
     private val user = Meta.userEntity
 
-    suspend fun findById(id: Long): Option<UserEntity> = Option.catch {
+    suspend fun findById(
+        id: Long
+    ): Option<UserEntity> = Option.catch {
         db.runQuery {
             QueryDsl.from(user).where {
                 user.id eq id
@@ -25,7 +27,9 @@ class UserRepository(
         QueryDsl.from(user)
     }
 
-    suspend fun save(newUser: UserEntity): UserEntity = db.runQuery {
+    suspend fun save(
+        newUser: UserEntity
+    ): UserEntity = db.runQuery {
         QueryDsl.insert(user).single(newUser)
     }
 }

@@ -172,12 +172,18 @@ object ServerConfig {
             springApplicationContext.getBean(T::class.java)
         }
 
-        inline fun <reified T, R> ApplicationCall.beanWith(f: (T) -> R): Either<Throwable, R> = bean<T>().map(f)
-        inline fun <reified T, R> ApplicationCall.beanWithFlatten(f: (T) -> Either<Throwable, R>): Either<Throwable, R> = bean<T>().map(f).flatten()
+        inline fun <reified T, R> ApplicationCall.beanWith(
+            f: (T) -> R
+        ): Either<Throwable, R> = bean<T>().map(f)
 
-        suspend fun ApplicationCall.respondError(statusCode: HttpStatusCode, e: Throwable) {
-            this.respond(statusCode, this.messageSource.errorMessage(e))
-        }
+        inline fun <reified T, R> ApplicationCall.beanWithFlatten(
+            f: (T) -> Either<Throwable, R>
+        ): Either<Throwable, R> = bean<T>().map(f).flatten()
+
+        suspend fun ApplicationCall.respondError(
+            statusCode: HttpStatusCode,
+            e: Throwable
+        ) = this.respond(statusCode, this.messageSource.errorMessage(e))
 
         @Throws(IllegalStateException::class)
         fun Application.config(vararg packages: String) {
