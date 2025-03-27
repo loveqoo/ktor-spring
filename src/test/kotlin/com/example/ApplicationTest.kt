@@ -13,7 +13,7 @@ class ApplicationTest {
     fun testRoot() = testApplication {
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
-            assertEquals("안녕, 스트레인저", bodyAsText())
+            assertEquals("Hello, 스트레인저", bodyAsText())
         }
     }
 }
